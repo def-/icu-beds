@@ -10,7 +10,7 @@ title = "Entwicklung ICU-Betten nach Bundesland"
 result = OrderedDict()
 result["Total"] = {}
 
-for report_nr, filename in enumerate(sorted(glob('report_*.html'))):
+for filename in sorted(glob('report_*.html')):
     time = filename[7:17]
     tree = html.parse(filename)
     keys = tree.xpath('//table[@id="table"]/thead/tr/th/text()')[:-1]
@@ -19,10 +19,17 @@ for report_nr, filename in enumerate(sorted(glob('report_*.html'))):
     for state in states:
         name = state.xpath('th/text()')[0]
         values = [int(value) for value in state.xpath('td/text()')]
-        if report_nr == 0:
-            assert(name not in result)
         for key, value in zip(keys, values):
             result.setdefault(name, {}).setdefault(key, []).append({"date": time, "value": value})
+
+for state, val in result.items():
+    if state == "Total":
+        continue
+
+    for key , val2 in val.items():
+        for r in val2:
+            time = r["date"]
+            value = r["value"]
             if key not in result["Total"]:
                 result["Total"][key] = []
             for entry in result["Total"][key]:
