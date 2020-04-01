@@ -18,7 +18,7 @@ for filename in sorted(glob('report_*.html')):
 
     for state in states:
         name = state.xpath('th/text()')[0]
-        values = [int(value) for value in state.xpath('td/text()')]
+        values = [round(float(value)) for value in state.xpath('td/text()')]
         for key, value in zip(keys, values):
             result.setdefault(name, {}).setdefault(key, []).append({"date": time, "value": value})
 
